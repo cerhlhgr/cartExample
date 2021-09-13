@@ -1,0 +1,154 @@
+<html>
+
+<head>
+    <title>Task13</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+
+<style>
+    h1{
+        text-align: center;
+    }
+    .posts{
+        display:flex;
+        border: 2px solid black;
+        margin:2% 2% 2% 2%;
+        flex-basis: 230px;
+        flex-direction:row;
+        flex-wrap:wrap;
+
+    }
+    .product{
+        display:flex;
+        flex-basis: 230px;
+        margin:2% 2% 2% 2%;
+        border-radius:10px;
+        box-shadow: 0 0 10px black;
+        flex-direction:column;
+        justify-content: center;
+    }
+    .id{
+        display: none;
+    }
+
+    input{
+        margin-left: 20%;
+        margin-right: 20%;
+        margin-bottom: 10%;
+    }
+
+    .cart{
+        display:flex;
+        border: 2px solid black;
+        margin:2% 2% 2% 2%;
+        flex-basis: 230px;
+        flex-direction:row;
+        flex-wrap:wrap;
+    }
+    .item{
+        display:flex;
+        flex-basis: 230px;
+        margin:2% 2% 2% 2%;
+        border-radius:10px;
+        border: 2px solid red;
+        flex-direction:column;
+        justify-content: center;
+    }
+
+    .sub{
+        border-radius: 4px;
+    }
+</style>
+
+<h1>Товары</h1>
+<div class = "posts">
+
+
+
+</div>
+<h1>Корзина</h1>
+<div class = "cart">
+
+
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+
+    function render(data){
+        data.map((a) => {
+            console.log(a)
+        })
+    }
+   let data = {
+       type:"check"
+   }
+    async function sendData(str)
+    {
+      await axios.post('index.php', {
+          data: data
+    }).then((res)=>{
+          for (key in res.data) {
+              console.log(res.data[key].name)
+              document.querySelector(".posts").insertAdjacentHTML("beforeend", `<div class='product'> <h1>${res.data[key].name}</h1> <p> Цена: ${res.data[key].price} </p> <input class = 'sub' type='submit' value='В корзину' onClick='getdetails(this.id)' id=${res.data[key].id}> </div>`)
+          }
+
+      })
+    }
+
+
+
+    async function cartCheck(data)
+    {
+        await axios.post('index.php', {
+            data: data
+        }).then((res)=>{
+            console.log("card",res.data[0])
+            document.querySelector(".cart").innerHTML = '';
+            for (key in res.data)
+            {
+                document.querySelector(".cart").insertAdjacentHTML("beforeend", `<div class='product'> <h1>${res.data[key][0].name}</h1> <p> Цена: ${res.data[key][0].price} </p> <p>Количество:${res.data[key].count}  </p> </div>`)
+            }
+
+        })
+    }
+    sendData(data)
+
+    let cartData = {
+        cart:"check"
+    }
+    cartCheck(cartData)
+
+
+    async function sendIdPost(id)
+    {
+        await axios.post('index.php', {
+            data: id
+        }).then((res)=>{
+                console.log("sendIdpost",res)
+
+                cartCheck(cartData)
+        })
+    }
+
+
+
+
+    function getdetails(id) {
+
+        let idData = {
+            id:id
+        }
+        sendIdPost(idData)
+
+    }
+
+
+</script>
+
+</body>
+</html>
+
+
+
